@@ -1017,9 +1017,9 @@ for a = 1:length(files)
                         
                         d.hdr.label = d.label;
                         d.hdr.Fs = d.fsample;
-                        d.fname = [hdr.fname '_run-SCT' char(datetime(runs{c},'Inputformat','yyyy-MM-dd HH:mm:ss.sss','format','yyyyMMddhhmmss'))];
+                        d.fname = [hdr.fname '_run-SCT' char(datetime(runs{c},'Inputformat','yyyy-MM-dd HH:mm:ss.sss','format','yyyyMMddhhmmss')) '_' num2str(c)];
                         alldata{length(alldata)+1} = d;
-                        keyboard % LOG missing    LogTable(size(LogTable,1)+1,:) = {hdr.subject,char(hdr.SessionDate),char(hdr.SessionEndDate),datafields{b},'','',fullfile(hdr.fpath,[hdr.fname '_run-Impedance.csv']),'','',filename}
+%                         keyboard % LOG missing    LogTable(size(LogTable,1)+1,:) = {hdr.subject,char(hdr.SessionDate),char(hdr.SessionEndDate),datafields{b},'','',fullfile(hdr.fpath,[hdr.fname '_run-Impedance.csv']),'','',filename}
                         
                     end
             end
