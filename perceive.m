@@ -547,7 +547,8 @@ for a = 1:length(files)
                         d.label=Channel(i);
                         d.trial{1} = raw;
                         
-                        d.time{1} = linspace(seconds(datetime(runs{c},'Inputformat','yyyy-MM-dd HH:mm:ss.sss')-hdr.d0),seconds(datetime(runs{c},'Inputformat','yyyy-MM-dd HH:mm:ss.sss')-hdr.d0)+size(d.trial{1},2)/fsample,size(d.trial{1},2));
+                        timestamps = str2num(data(i(1)).TicksInMses);
+                        d.time{1} = ((1:size(d.trial{1}, 2)) .* (1/fsample)) + (timestamps(1)/1000);
                         
                         d.fsample = fsample;
                         
@@ -627,7 +628,7 @@ for a = 1:length(files)
                         for e =1:length(cdata.LfpData)
                             d.trial{1}(1:2,e) = [cdata.LfpData(e).Left.LFP;cdata.LfpData(e).Right.LFP];
                             d.trial{1}(3:4,e) = [cdata.LfpData(e).Left.mA;cdata.LfpData(e).Right.mA];
-                            d.time{1}(e) = seconds(datetime(runs{c},'InputFormat','yyyy-MM-dd HH:mm:ss.SSS')-hdr.d0)+((cdata.LfpData(e).TicksInMs/1000)-tstart);
+                            d.time{1}(e) = cdata.LfpData(e).TicksInMs/1000;
                             d.realtime(e) = datetime(runs{c},'Inputformat','yyyy-MM-dd HH:mm:ss.SSS','Format','yyyy-MM-dd HH:mm:ss.SSS')+seconds((d.time{1}(e)-d.time{1}(1)));
                             d.hdr.BSL.seq(e)= cdata.LfpData(e).Seq;
                         end
@@ -1057,7 +1058,11 @@ for a = 1:length(files)
             fulldata.time{1}=fulldata.time{1};
             otime = bsl.data.time{1};
             for c =1:4
-                fulldata.trial{1}(c+2,:) = interp1(otime-otime(1),bsl.data.trial{1}(c,:),fulldata.time{1}-fulldata.time{1}(1),'nearest');
+                try
+                    fulldata.trial{1}(c+2,:) = interp1(otime-otime(1),bsl.data.trial{1}(c,:),fulldata.time{1}-fulldata.time{1}(1),'nearest');
+                catch
+                    keyboard
+                end
             end
             if size(fulldata.trial{1},2) > 1000
                 perceive_figure('BrainSenseTimeDomain','Units','centimeters','PaperUnits','centimeters','Position',[1 1 40 20]);
